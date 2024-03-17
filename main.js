@@ -2,13 +2,18 @@ import * as THREE from 'three';
 import gsap from 'gsap';
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 65, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const canvContainer = document.querySelector("#canvCont")
 
-const renderer = new THREE.WebGLRenderer({ antialias: true});
-renderer.setSize( window.innerWidth, window.innerHeight );
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+const renderer = new THREE.WebGLRenderer({antialias: true, canvas: document.querySelector('canvas')});
+
+
+renderer.setSize( window.innerWidth,window.innerHeight );
 renderer.setPixelRatio(window.devicePixelRatio)
-document.body.appendChild( renderer.domElement );
-
+/*document.body.appendChild( renderer.domElement );
+const div = document.getElementById('#myDiv');
+div.appendChild(renderer.domElement);*/
 const geometry = new THREE.SphereGeometry( 2, 40, 30 );
 const material = new THREE.ShaderMaterial( { 
 	vertexShader: 
@@ -38,7 +43,8 @@ const material = new THREE.ShaderMaterial( {
     `,
 	uniforms:{
 		globeTexture:{
-			value: new THREE.TextureLoader().load('/pics/globe.jpg')
+			value: new THREE.TextureLoader().load('/pics/globe3.jpg')
+			
 		}
 	}
   
@@ -51,7 +57,7 @@ const sphere = new THREE.Mesh( geometry, material );
 
 
 
-const atmos_geometry = new THREE.SphereGeometry( 1.9, 40, 30 );
+const atmos_geometry = new THREE.SphereGeometry( 2.5, 40, 40 );
 const atmos_material = new THREE.ShaderMaterial( { 
 	vertexShader:`
 	varying vec3 at_vertexNormal;
@@ -69,8 +75,8 @@ const atmos_material = new THREE.ShaderMaterial( {
 
     void main()
     {
-		float intensity = pow(0.8- dot(at_vertexNormal, vec3(0.0, 0.0, 0.1)),2.0);
-		gl_FragColor = vec4(0.5,0.5,0.5,0.6) * intensity;
+		float intensity = pow(0.0- dot(at_vertexNormal, vec3(0.0, 0.0, 0.5)),2.0);
+		gl_FragColor = vec4(0,20,20,5) * intensity;
     }
     `,
 	
@@ -86,6 +92,16 @@ const atmossphere = new THREE.Mesh( atmos_geometry, atmos_material );
 atmossphere.scale.set(1.1,1.1,1.1);
 
 
+
+// Füge den Pin hinzu
+var pinGeometry = new THREE.SphereGeometry(0.05, 10, 10);
+var pinMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+var pin = new THREE.Mesh(pinGeometry, pinMaterial);
+var pinPositionOnGlobe = new THREE.Vector3(0.6, -1.1, 1.5); // Position des Pins auf der Kugel
+pin.position.copy(pinPositionOnGlobe);
+sphere.add(pin);
+
+
 camera.position.z = 5;
 scene.background = new THREE.Color(0xffffff);
 const group = new THREE.Group();
@@ -93,34 +109,59 @@ group.add(sphere)
 group.add(atmossphere)
 scene.add(group)
 
-
+scene.add(pin);
 
 
 const mouse = {
 	x: undefined,
 	y: undefined
 }
+/////////////////////////////////////////////////Mouse event//////////////////////////////////////////////////////////////////////////
 
+var mouseDown = false;
 
-addEventListener('mousemove', () => {
-	mouse.x = (event.clientX / innerWidth) * 2 - 1
-	mouse.y = -(event.clientY / innerHeight) * 2 +1
+addEventListener('mousedown', () => {
+
+	event.preventDefault();
+	mouseDown = true;
+	
 })
 
+addEventListener('mouseup', () => {
+    event.preventDefault();
+    mouseDown = false;
+})
 
+addEventListener('mousemove', () => {
+	event.preventDefault();
+	if (!mouseDown) return;
+
+	mouse.x = (event.clientX / window.innerWidth) * 4 - 1
+	mouse.y = -(event.clientY / window.innerHeight) * 4 +1
+
+	gsap.to(group.rotation,{
+		y:  + mouse.x * 1.5,
+		x:  -(mouse.y) * 1.5
+	})
+
+	
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//default setting
+sphere.rotation.x -= 0.3;
+        // Aktualisiere die Position des Pins basierend auf der Position der Kugel
+function updatePinPosition() {
+    var pinWorldPosition = pinPositionOnGlobe.clone();
+    pinWorldPosition.applyMatrix4(sphere.matrixWorld);
+    pin.position.copy(pinWorldPosition);
+}
 function animate() {
 	requestAnimationFrame( animate );
 
-	//sphere.rotation.x += 0.0001;
-	//sphere.rotation.y += 0.002;
 	sphere.rotation.y += 0.001;
-
-	gsap.to(group.rotation,{
-		y: mouse.x * 0.5,
-		x: -(mouse.y) * 0.5,
-		duration: 2
-	})
 	renderer.render( scene, camera );
+	updatePinPosition();
 	
 }
 
