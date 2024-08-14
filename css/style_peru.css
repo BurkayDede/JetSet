@@ -1,3 +1,33 @@
+#peru_locations{
+  height: auto;
+  width: 60%;
+  margin-left: 25%;
+  margin-top: 5%;
+}
+#figure-container{
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap; /* Bilder umbrechen bei kleineren Bildschirmen */
+  gap: 25px; /* Abstand zwischen den Bildern */
+  
+  max-width: 75%;
+
+}
+
+#figure-style{
+  flex: 1 1 200px; /* Elemente passen sich an und bleiben nebeneinander */
+  max-width: 200px;
+  text-align: center;
+
+}
+
+#peru_pics{
+  border-color: #1a1a1a; border-width: 1px;
+  width: 200px;
+  height: 150px;
+}
+
+
 #myInfos{
 
  color: #ffffff;
