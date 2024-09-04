@@ -10,8 +10,32 @@
   flex-wrap: wrap; /* Bilder umbrechen bei kleineren Bildschirmen */
   gap: 25px; /* Abstand zwischen den Bildern */
   
-  max-width: 75%;
+  max-width: 50%;
+  float: right;
+  
 
+}
+
+
+
+
+#intro_peru{
+  margin-left: 6%;
+  margin-top: 5%;
+  float: left;
+  max-width: 45%;
+  max-height: 50%;
+}
+
+
+#peru_lima
+{
+  border-color: #a5a5a5; border-width: 1px;
+  background-color: rgba(250, 250, 250, 0.897);
+  width: 50%;
+  height: 100%;
+  margin-left: 25%;
+  margin-top: 10%;
 }
 
 #figure-style{
@@ -20,9 +44,31 @@
   text-align: center;
 
 }
+figcaption {
+  font-family: monospace, sans-serif; /* Schriftart ändern */
+  font-size: 14px;                /* Schriftgröße ändern */
+  color: #333;                    /* Schriftfarbe ändern */
+  text-align: center;             /* Text zentrieren */
+  margin-top: 5px;               /* Abstand zum Bild */
+  font-style: bold;
+}
+
+input[type="image"] {
+  transition: transform 0.3s ease;
+}
+
+input[type="image"]:hover {
+  transform: scale(1.1); /* Bild um 10% vergrößern */
+}
+#flag_style{
+  width: 250px;
+  height: 200px;
+  margin-top: 10%;
+}
+
 
 #peru_pics{
-  border-color: #1a1a1a; border-width: 1px;
+ 
   width: 200px;
   height: 150px;
 }
